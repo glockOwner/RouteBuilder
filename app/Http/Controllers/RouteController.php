@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CoordinatesRequest;
 use App\Http\Requests\RouteRequest;
+use App\Http\Resources\GeoPointsResource;
 use App\Jobs\GetAddressByCoordinates;
 use App\Models\Geoposition;
 use GuzzleHttp\Client;
@@ -34,8 +35,8 @@ class RouteController extends Controller
         /** @var Geoposition $geoPositions */
         $geoPositions = Geoposition::where('created_at', '>', $request->timeFrom)
             ->where('created_at', '<', $request->timeTo)
-            ->where('user_id', '=', $user->id);
+            ->where('user_id', '=', $user->id)->paginate(1);
 
-        return $geoPositions->jsonPaginate();
+        return GeoPointsResource::collection($geoPositions);
     }
 }

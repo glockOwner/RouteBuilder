@@ -6,6 +6,24 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class AuthResource extends JsonResource
 {
+    /**
+     * @var string $accessToken
+     */
+    private $accessToken;
+
+    /**
+     * @var string $accessTokenExpiredAt
+     */
+    private $accessTokenExpiredAt;
+    /**
+     * @var string $refreshToken
+     */
+    private $refreshToken;
+    /**
+     * @var string $refreshTokenExpiredAt
+     */
+    private $refreshTokenExpiredAt;
+
     public function __construct($resource, $accessToken, $refreshToken)
     {
         parent::__construct($resource);
