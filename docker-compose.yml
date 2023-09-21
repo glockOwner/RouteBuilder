@@ -1,0 +1,49 @@
+version: '3.1'
+
+services:
+    database:
+        image: postgres:latest
+        restart: always
+        environment:
+            POSTGRES_DB: ${DB_DATABASE:-bestRkApp}
+            # DB pass and user
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+            POSTGRES_USER: ${DB_USERNAME}
+        volumes:
+            - pg_volume:/var/lib/postgresql/data
+        ports:
+            - "5432:5432"
+    php-fpm:
+        build: ./docker/php-fpm
+        depends_on:
+            -   database
+        restart: always
+        volumes:
+          - ./:/var/www/bestRk
+        environment:
+          PHP_IDE_CONFIG:  serverName=Docker
+    nginx:
+      image: nginx:alpine
+      restart: always
+      volumes:
+        - ./docker/nginx:/etc/nginx/conf.d/
+        - ./:/var/www/bestRk
+      depends_on:
+        - php-fpm
+      ports:
+        - "8181:80"
+    worker:
+      build: ./docker/php-cli
+      depends_on:
+        - database
+      restart: always
+      volumes:
+        - ./:/var/www/bestRk
+      environment:
+        PHP_IDE_CONFIG: serverName=Docker
+      command: ['php', 'artisan', 'queue:work']
+
+volumes:
+  pg_volume:
+    external: true
+

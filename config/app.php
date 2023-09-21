@@ -165,7 +165,8 @@ return [
         /*
          * Package Service Providers...
          */
-
+        \MohamedGaber\SanctumRefreshToken\SanctumRefreshTokenServiceProvider::class,
+        \Spatie\JsonApiPaginate\JsonApiPaginateServiceProvider::class,
         /*
          * Application Service Providers...
          */

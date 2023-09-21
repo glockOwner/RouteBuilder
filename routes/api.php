@@ -14,6 +14,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::controller(\App\Http\Controllers\AuthController::class)->group(function () {
+    Route::post('/registration', 'registerUser');
+    Route::post('/login', 'loginUser') ;
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::group(['controller' => \App\Http\Controllers\AuthController::class], function () {
+        Route::post('/refresh-token', 'refreshToken')->name('token.refresh');
+    });
+    Route::group(['controller' => \App\Http\Controllers\RouteController::class], function () {
+        Route::post('/route/save-coordinates', 'saveCoordinates');
+        Route::get('/route', 'getRoute');
+    });
 });
