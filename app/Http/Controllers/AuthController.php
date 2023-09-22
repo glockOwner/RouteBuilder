@@ -9,9 +9,64 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\PersonalAccessToken;
+use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Response(
+ *     response="404",
+ *     description="Not Found",
+ * )
+ *
+ *
+ * @OA\Response(
+ *     response="403",
+ *     description="Forbidden",
+ * )
+ *
+ *
+ *
+ *
+ * @OA\Response(
+ *     response="422",
+ *     description="Unprocessable Content",
+ *     @OA\JsonContent(
+ *         @OA\Property (property="message", type="string", example="The given data was invalid."),
+ *         @OA\Property (property="errors", type="object", description="array of validation errors",
+ *             @OA\Property (property="field", type="array", @OA\Items(type="string", example="desc of error"))
+ *         )
+ *     )
+ * )
+ */
 class AuthController extends Controller
 {
+
+    /**
+     * @OA\Post(
+     *     path="/api/registration",
+     *     tags={"Auth"},
+     *     summary="Method for registration",
+     *     @OA\RequestBody(
+     *         description="The data for auth",
+     *         @OA\JsonContent(
+     *              required={"email", "password"},
+     *              @OA\Property (property="email", type="string", example="test@mail.ru"),
+     *              @OA\Property (property="password", type="string", example="123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="User is registered and got access and refresh tokens",
+     *         @OA\Schema (
+     *              @OA\Property (property="email", type="string"),
+     *              @OA\Property (property="access_token", type="object", description="key for authorization",
+     *                  @OA\Property (property="token", type="string", example="111|mejC8hk7lhsdt3fsVQ3mCWXSJG1YcTf5qjWHn3zGv"),
+     *                  @OA\Property (property="expired_at", type="string")
+     *              )
+     *         )
+     *     ),
+     *     @OA\Response(response="422", ref="#/components/responses/422")
+     * )
+     */
     public function registerUser(AuthRequest $request)
     {
         $request->validated();
@@ -24,6 +79,36 @@ class AuthController extends Controller
         return new AuthResource($user, $accessToken, $refreshToken);
     }
 
+
+    /**
+     * @OA\Post(
+     *     path="/api/login",
+     *     tags={"Auth"},
+     *     summary="Method for login",
+     *     @OA\RequestBody(
+     *         description="The data for auth",
+     *         @OA\JsonContent(
+     *              required={"email", "password"},
+     *              @OA\Property (property="email", type="string", example="test@mail.ru"),
+     *              @OA\Property (property="password", type="string", example="123"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="User is logined and got access and refresh tokens",
+     *         @OA\JsonContent(
+     *              @OA\Property (property="email", type="string"),
+     *              @OA\Property (property="access_token", type="object", description="key for authorization",
+     *                  @OA\Property (property="token", type="string", example="111|mejC8hk7lhsdt3fsVQ3mCWXSJG1YcTf5qjWHn3zGv"),
+     *                  @OA\Property (property="expired_at", type="string")
+     *              )
+     *         )
+     *     ),
+     *     @OA\Response(response="404", ref="#/components/responses/404"),
+     *     @OA\Response(response="403", ref="#/components/responses/403"),
+     *     @OA\Response(response="422", ref="#/components/responses/422")
+     * )
+     */
     public function loginUser(AuthRequest $request)
     {
         $request->validated();
@@ -40,6 +125,26 @@ class AuthController extends Controller
         return new AuthResource($user, $accessToken, $refreshToken);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/refresh-token",
+     *     tags={"Auth"},
+     *     summary="Method for token refreshing",
+     *     security={ {"bearerAuth": {}} },
+     *     @OA\Response(
+     *         response="200",
+     *         description="Access token is refreshed",
+     *         @OA\JsonContent(
+     *              @OA\Property (property="email", type="string"),
+     *              @OA\Property (property="access_token", type="object", description="key for authorization",
+     *                  @OA\Property (property="token", type="string", example="111|mejC8hk7lhsdt3fsVQ3mCWXSJG1YcTf5qjWHn3zGv"),
+     *                  @OA\Property (property="expired_at", type="string")
+     *              )
+     *         )
+     *     ),
+     *     @OA\Response(response="403", ref="#/components/responses/403")
+     * )
+     */
     public function refreshToken(Request $request)
     {
         $token = $request->bearerToken();

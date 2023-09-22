@@ -1,0 +1,376 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Api documentation",
+        "description": "Api documentation",
+        "contact": {
+            "email": "support@example.com"
+        },
+        "version": "3.0"
+    },
+    "paths": {
+        "/api/registration": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Method for registration",
+                "operationId": "842fac70a46ce5452efeefcfd3519edc",
+                "requestBody": {
+                    "description": "The data for auth",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "test@mail.ru"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User is registered and got access and refresh tokens"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Method for login",
+                "operationId": "1f9fd504b8b4e1cc2096d776682e9318",
+                "requestBody": {
+                    "description": "The data for auth",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "test@mail.ru"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User is logined and got access and refresh tokens",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "access_token": {
+                                            "description": "key for authorization",
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "111|mejC8hk7lhsdt3fsVQ3mCWXSJG1YcTf5qjWHn3zGv"
+                                                },
+                                                "expired_at": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            }
+        },
+        "/api/refresh-token": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Method for token refreshing",
+                "operationId": "833684aa6f123680767976945e7c783c",
+                "responses": {
+                    "200": {
+                        "description": "Access token is refreshed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "access_token": {
+                                            "description": "key for authorization",
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "111|mejC8hk7lhsdt3fsVQ3mCWXSJG1YcTf5qjWHn3zGv"
+                                                },
+                                                "expired_at": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/route/save-coordinates": {
+            "post": {
+                "tags": [
+                    "Routing"
+                ],
+                "summary": "Method for adding user's coordinates",
+                "operationId": "9574ca01f7acc4aca9981b16050191c0",
+                "requestBody": {
+                    "description": "Save user's coordinates",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "latitude",
+                                    "longitude"
+                                ],
+                                "properties": {
+                                    "latitude": {
+                                        "type": "string",
+                                        "example": "51.0148"
+                                    },
+                                    "longitude": {
+                                        "type": "string",
+                                        "example": "53.8152"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User saved coordinates successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/route": {
+            "get": {
+                "tags": [
+                    "Routing"
+                ],
+                "summary": "Method for getting user's route by timeline",
+                "operationId": "2dacb7be88ca224e150da6e563b81a2b",
+                "parameters": [
+                    {
+                        "parameter": "timeFrom",
+                        "name": "timeFrom",
+                        "in": "query",
+                        "description": "Time from which to request user's geopoints",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "2023-09-22 19:59:50"
+                        }
+                    },
+                    {
+                        "parameter": "timeTo",
+                        "name": "timeTo",
+                        "in": "query",
+                        "description": "Time until which to request user's geopoints",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "2023-09-22 19:59:50"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of user's geopoints and addresses with pagination",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "point": {
+                                                        "properties": {
+                                                            "latitude": {
+                                                                "type": "string",
+                                                                "example": "56.847484"
+                                                            },
+                                                            "longitude": {
+                                                                "type": "string",
+                                                                "example": "53.202720"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "address": {
+                                                        "type": "string",
+                                                        "example": "Россия, Удмуртская Республика, Ижевск, улица Карла Маркса, 191"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "responses": {
+            "404": {
+                "description": "Not Found"
+            },
+            "403": {
+                "description": "Forbidden"
+            },
+            "422": {
+                "description": "Unprocessable Content",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "The given data was invalid."
+                                },
+                                "errors": {
+                                    "description": "array of validation errors",
+                                    "properties": {
+                                        "field": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "example": "desc of error"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Methods for authentication"
+        },
+        {
+            "name": "Routing",
+            "description": "Methods of routing"
+        }
+    ]
+}
